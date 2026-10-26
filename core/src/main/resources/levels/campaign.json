@@ -1,0 +1,1506 @@
+{
+    "packId": "campaign",
+    "contentVersion": 1,
+    "levels": [
+        {
+            "id": "c001",
+            "number": 1,
+            "size": 5,
+            "regions": [
+                "AAEEE",
+                "AACBE",
+                "AAABB",
+                "ADBBB",
+                "DDBBB"
+            ],
+            "solution": [
+                4,
+                2,
+                0,
+                3,
+                1
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c002",
+            "number": 2,
+            "size": 5,
+            "regions": [
+                "CCCAA",
+                "CCEAA",
+                "CBDDA",
+                "DBBDD",
+                "DDDDD"
+            ],
+            "solution": [
+                0,
+                2,
+                4,
+                1,
+                3
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c003",
+            "number": 3,
+            "size": 5,
+            "regions": [
+                "AAAAE",
+                "CABDD",
+                "CCBDD",
+                "CBBBB",
+                "CBBBB"
+            ],
+            "solution": [
+                4,
+                1,
+                3,
+                0,
+                2
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c004",
+            "number": 4,
+            "size": 5,
+            "regions": [
+                "CBBBD",
+                "BBBBD",
+                "ABBDD",
+                "AAAAD",
+                "AAAED"
+            ],
+            "solution": [
+                0,
+                2,
+                4,
+                1,
+                3
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c005",
+            "number": 5,
+            "size": 5,
+            "regions": [
+                "EEEDD",
+                "AEEDD",
+                "AAACD",
+                "ACCCD",
+                "CCCBD"
+            ],
+            "solution": [
+                2,
+                0,
+                4,
+                1,
+                3
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c006",
+            "number": 6,
+            "size": 5,
+            "regions": [
+                "CCCCE",
+                "CCCCC",
+                "BCAAA",
+                "BBAAA",
+                "BDAAA"
+            ],
+            "solution": [
+                4,
+                2,
+                0,
+                3,
+                1
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c007",
+            "number": 7,
+            "size": 5,
+            "regions": [
+                "CDDDD",
+                "CCCDE",
+                "CCCEE",
+                "BCAEE",
+                "BBBEE"
+            ],
+            "solution": [
+                3,
+                1,
+                4,
+                2,
+                0
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c008",
+            "number": 8,
+            "size": 5,
+            "regions": [
+                "CCCCA",
+                "CCCCC",
+                "EEDDD",
+                "EEEDD",
+                "EEBDD"
+            ],
+            "solution": [
+                4,
+                1,
+                3,
+                0,
+                2
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c009",
+            "number": 9,
+            "size": 6,
+            "regions": [
+                "DDEBBB",
+                "ADDBBB",
+                "DDDBBB",
+                "DDDBBC",
+                "DDDBBB",
+                "DFFFFF"
+            ],
+            "solution": [
+                2,
+                0,
+                3,
+                5,
+                1,
+                4
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c010",
+            "number": 10,
+            "size": 6,
+            "regions": [
+                "FBDDEE",
+                "BBBDEE",
+                "BBBBBE",
+                "AABBCC",
+                "AAABCC",
+                "AAAACC"
+            ],
+            "solution": [
+                0,
+                3,
+                5,
+                2,
+                4,
+                1
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c011",
+            "number": 11,
+            "size": 6,
+            "regions": [
+                "CCCCEE",
+                "CCCCEE",
+                "CCCDDD",
+                "ACDDDD",
+                "AAADDF",
+                "BBBBDF"
+            ],
+            "solution": [
+                4,
+                1,
+                3,
+                0,
+                5,
+                2
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c012",
+            "number": 12,
+            "size": 6,
+            "regions": [
+                "EFFAAA",
+                "EEFFFA",
+                "EEECAA",
+                "EEECAB",
+                "EEEDBB",
+                "EEDDDB"
+            ],
+            "solution": [
+                1,
+                5,
+                3,
+                0,
+                4,
+                2
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c013",
+            "number": 13,
+            "size": 6,
+            "regions": [
+                "FFCCDD",
+                "FFFADE",
+                "FFFAAE",
+                "AAAAAE",
+                "BAAAEE",
+                "AAAEEE"
+            ],
+            "solution": [
+                2,
+                4,
+                1,
+                3,
+                0,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c014",
+            "number": 14,
+            "size": 6,
+            "regions": [
+                "DDDDDD",
+                "DDDDBB",
+                "EDDDDB",
+                "CCCCFB",
+                "CCCCFB",
+                "CCCAAA"
+            ],
+            "solution": [
+                2,
+                5,
+                0,
+                4,
+                1,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c015",
+            "number": 15,
+            "size": 6,
+            "regions": [
+                "EAAFFF",
+                "EEAFAF",
+                "CCAAAF",
+                "CCBAAA",
+                "CCDAAA",
+                "CCDDDA"
+            ],
+            "solution": [
+                5,
+                1,
+                4,
+                2,
+                0,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c016",
+            "number": 16,
+            "size": 6,
+            "regions": [
+                "CCCCAE",
+                "CCDCAE",
+                "BDDEEE",
+                "DDEEEE",
+                "DDDDEE",
+                "DDDFFE"
+            ],
+            "solution": [
+                2,
+                4,
+                0,
+                5,
+                1,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c017",
+            "number": 17,
+            "size": 6,
+            "regions": [
+                "AAEEFF",
+                "AAFFFF",
+                "BAFFFF",
+                "BBBFCF",
+                "BBBCCF",
+                "BDCCCC"
+            ],
+            "solution": [
+                3,
+                0,
+                5,
+                2,
+                4,
+                1
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c018",
+            "number": 18,
+            "size": 6,
+            "regions": [
+                "EEFFFB",
+                "EEFFFF",
+                "EEFFFF",
+                "ACDDDD",
+                "ACCDDD",
+                "CCDDDD"
+            ],
+            "solution": [
+                5,
+                1,
+                3,
+                0,
+                2,
+                4
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c019",
+            "number": 19,
+            "size": 7,
+            "regions": [
+                "FFFFGGC",
+                "AFGGGGG",
+                "AAAGGGG",
+                "AAAEEDD",
+                "ABAAEED",
+                "ABAAEEE",
+                "BBAAEEE"
+            ],
+            "solution": [
+                6,
+                1,
+                3,
+                5,
+                2,
+                4,
+                0
+            ],
+            "difficulty": "EASY"
+        },
+        {
+            "id": "c020",
+            "number": 20,
+            "size": 7,
+            "regions": [
+                "BBAAAAA",
+                "BBBAAGG",
+                "BBDDDEE",
+                "CCDEEEE",
+                "CCDDEEE",
+                "FCCDDDE",
+                "FCCDDDD"
+            ],
+            "solution": [
+                4,
+                6,
+                1,
+                5,
+                3,
+                0,
+                2
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c021",
+            "number": 21,
+            "size": 7,
+            "regions": [
+                "DCCEEEE",
+                "CCCEEEE",
+                "CCCCEEE",
+                "CCCGGEE",
+                "CCBBBAA",
+                "CCBBBBA",
+                "CCCFBBA"
+            ],
+            "solution": [
+                0,
+                5,
+                1,
+                4,
+                2,
+                6,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c022",
+            "number": 22,
+            "size": 7,
+            "regions": [
+                "FFDDDDD",
+                "FDDDDBC",
+                "DDBBBBG",
+                "EDBBBGG",
+                "EEBBGGG",
+                "EEEEEAG",
+                "EEEEEAG"
+            ],
+            "solution": [
+                0,
+                6,
+                3,
+                1,
+                4,
+                2,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c023",
+            "number": 23,
+            "size": 7,
+            "regions": [
+                "BBEEEAA",
+                "BCEEEAA",
+                "CCCCCCA",
+                "CCCCCCF",
+                "CCCCCFF",
+                "DCCCGFF",
+                "CCCCGGF"
+            ],
+            "solution": [
+                1,
+                3,
+                6,
+                2,
+                5,
+                0,
+                4
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c024",
+            "number": 24,
+            "size": 7,
+            "regions": [
+                "GGGGGCC",
+                "FFFFGCC",
+                "AAAAGGG",
+                "AAABBGG",
+                "DDAEEEE",
+                "DDEEEEE",
+                "DDEEEEE"
+            ],
+            "solution": [
+                5,
+                1,
+                6,
+                4,
+                2,
+                0,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c025",
+            "number": 25,
+            "size": 7,
+            "regions": [
+                "CCFFFFF",
+                "ACCCFFF",
+                "AACCFEF",
+                "AAAAEEF",
+                "GAABEDF",
+                "GAGDDDF",
+                "GGGDDDF"
+            ],
+            "solution": [
+                6,
+                2,
+                5,
+                1,
+                3,
+                0,
+                4
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c026",
+            "number": 26,
+            "size": 7,
+            "regions": [
+                "AABBBBB",
+                "ACCBBBB",
+                "ACCCBBB",
+                "ACEEBBG",
+                "DCEEGGG",
+                "DFEEEEG",
+                "FFFEEEE"
+            ],
+            "solution": [
+                1,
+                5,
+                3,
+                6,
+                0,
+                4,
+                2
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c027",
+            "number": 27,
+            "size": 7,
+            "regions": [
+                "CCCCBBB",
+                "DCCCCBF",
+                "DEEEBBB",
+                "DEEEBBB",
+                "DEEEEBB",
+                "GGEEEBB",
+                "GGGGEAA"
+            ],
+            "solution": [
+                2,
+                6,
+                4,
+                0,
+                3,
+                1,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c028",
+            "number": 28,
+            "size": 7,
+            "regions": [
+                "AAFFFFD",
+                "AAAFFDD",
+                "AAABBGD",
+                "AABBBBD",
+                "AAAABBB",
+                "ECCBBBB",
+                "ECBBBBB"
+            ],
+            "solution": [
+                6,
+                3,
+                5,
+                1,
+                4,
+                2,
+                0
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c029",
+            "number": 29,
+            "size": 7,
+            "regions": [
+                "CCCCCCE",
+                "CGGGGGE",
+                "DDDDDEE",
+                "DDDDDDD",
+                "DADDDDD",
+                "AADBBDD",
+                "DDDBBFD"
+            ],
+            "solution": [
+                0,
+                2,
+                6,
+                4,
+                1,
+                3,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c030",
+            "number": 30,
+            "size": 7,
+            "regions": [
+                "DDDBBBB",
+                "DDDDDBF",
+                "DDDDDBG",
+                "ADDDDGG",
+                "CCCDGGG",
+                "CCCCGGG",
+                "CCEEGGG"
+            ],
+            "solution": [
+                4,
+                6,
+                2,
+                0,
+                5,
+                1,
+                3
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c031",
+            "number": 31,
+            "size": 8,
+            "regions": [
+                "BCCCCHHH",
+                "HHHCCHHH",
+                "HHHHHHHH",
+                "HAAAHFHH",
+                "AAAAEFFF",
+                "AAAEEGGD",
+                "AAAAEGGG",
+                "AEEEEEGG"
+            ],
+            "solution": [
+                0,
+                3,
+                1,
+                5,
+                2,
+                7,
+                4,
+                6
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c032",
+            "number": 32,
+            "size": 8,
+            "regions": [
+                "BBBBBBBB",
+                "BBBBBBBE",
+                "CCCEEEEE",
+                "CCGGAEEE",
+                "HHHAAEFF",
+                "AHAADDDD",
+                "AAAAAADD",
+                "AAAAADDD"
+            ],
+            "solution": [
+                4,
+                7,
+                0,
+                2,
+                6,
+                1,
+                3,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c033",
+            "number": 33,
+            "size": 8,
+            "regions": [
+                "GGGGGGGA",
+                "CGBBGAAA",
+                "CCCGGGAA",
+                "CGGGGGAA",
+                "CCGFFGEH",
+                "DCCFEEEE",
+                "DCDDEEEE",
+                "DDDDEEEE"
+            ],
+            "solution": [
+                4,
+                2,
+                6,
+                0,
+                7,
+                3,
+                5,
+                1
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c034",
+            "number": 34,
+            "size": 8,
+            "regions": [
+                "CCFFGGGG",
+                "CDDFGGGB",
+                "DDDFFFGB",
+                "FFFFFFFB",
+                "FFFFFFFF",
+                "EFFFFFFF",
+                "EEEAHHFF",
+                "EEEAAAFF"
+            ],
+            "solution": [
+                1,
+                6,
+                2,
+                7,
+                4,
+                0,
+                5,
+                3
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c035",
+            "number": 35,
+            "size": 8,
+            "regions": [
+                "HHHEEEEE",
+                "HHHHHEGG",
+                "HBBBBBGA",
+                "BBBBGGGA",
+                "BBBBDDGG",
+                "BBBBGGGG",
+                "FBBBCGGG",
+                "FBBBCCCG"
+            ],
+            "solution": [
+                3,
+                1,
+                7,
+                2,
+                4,
+                6,
+                0,
+                5
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c036",
+            "number": 36,
+            "size": 8,
+            "regions": [
+                "EEHHHHHG",
+                "EEHHHHHG",
+                "DEHHHHGG",
+                "DDHHHFFG",
+                "HHHHAGGG",
+                "CCCCAAGG",
+                "CCACAAGB",
+                "CCAAAABB"
+            ],
+            "solution": [
+                1,
+                3,
+                0,
+                5,
+                7,
+                2,
+                4,
+                6
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c037",
+            "number": 37,
+            "size": 8,
+            "regions": [
+                "GGGAAAAA",
+                "GGGAAAAA",
+                "HFFFAAAA",
+                "DFFAAACC",
+                "DDDDDBCE",
+                "DDDDDBCE",
+                "DDDDDBCE",
+                "DDDDDEEE"
+            ],
+            "solution": [
+                1,
+                4,
+                0,
+                2,
+                6,
+                3,
+                5,
+                7
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c038",
+            "number": 38,
+            "size": 8,
+            "regions": [
+                "CGGFFFFF",
+                "CCGGFFFH",
+                "AGGGFFFF",
+                "AAAGFFFF",
+                "AAADDFFF",
+                "AAABDFEF",
+                "AAABEEEE",
+                "AAAEEEEE"
+            ],
+            "solution": [
+                0,
+                7,
+                2,
+                6,
+                4,
+                1,
+                3,
+                5
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c039",
+            "number": 39,
+            "size": 8,
+            "regions": [
+                "AAAAAAAE",
+                "AAAAADAE",
+                "AAAAAGEE",
+                "AAAGGGEE",
+                "BBAGFEEE",
+                "BCCGFFEF",
+                "BCCFFFFF",
+                "HHHFFFFF"
+            ],
+            "solution": [
+                3,
+                5,
+                7,
+                4,
+                0,
+                2,
+                6,
+                1
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c040",
+            "number": 40,
+            "size": 8,
+            "regions": [
+                "CBBBBFEE",
+                "CCBFFFEE",
+                "GGBBAAEE",
+                "GGAAAAAE",
+                "GGGAAAAE",
+                "GGHHAAAA",
+                "GHHHHAAA",
+                "HHHHHDAA"
+            ],
+            "solution": [
+                0,
+                4,
+                2,
+                7,
+                1,
+                6,
+                3,
+                5
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c041",
+            "number": 41,
+            "size": 8,
+            "regions": [
+                "HHHBBBFD",
+                "EHHHBFFF",
+                "EHBBBFFF",
+                "EHEGGGFF",
+                "EEEGGFFF",
+                "AAEGGGGG",
+                "AAEAGGGG",
+                "AAAACGGG"
+            ],
+            "solution": [
+                7,
+                1,
+                3,
+                6,
+                2,
+                5,
+                0,
+                4
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c042",
+            "number": 42,
+            "size": 8,
+            "regions": [
+                "CCCCCAAA",
+                "ECGCGGAA",
+                "ECGGGDAB",
+                "FGGGDDAB",
+                "FFFGGDDB",
+                "FFFFHDDD",
+                "FFFFHDDD",
+                "FFFFFFFD"
+            ],
+            "solution": [
+                5,
+                3,
+                0,
+                2,
+                7,
+                4,
+                6,
+                1
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c043",
+            "number": 43,
+            "size": 9,
+            "regions": [
+                "CAAAAGGGB",
+                "AAAAGGGGB",
+                "EEEEEGGGB",
+                "EEEEEEEHB",
+                "EIEDDEHHH",
+                "EIIDDHHHH",
+                "IIIIDHDDH",
+                "IIDDDDDDH",
+                "IIIIIFHHH"
+            ],
+            "solution": [
+                0,
+                3,
+                6,
+                8,
+                2,
+                7,
+                4,
+                1,
+                5
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c044",
+            "number": 44,
+            "size": 9,
+            "regions": [
+                "HGGGIIIIB",
+                "HHHGDIIBB",
+                "HHHGGIIBE",
+                "HHGGEIEEE",
+                "HHHGEEEEE",
+                "HHHGAAEEE",
+                "HHHAAAEEE",
+                "HFAAAAAAE",
+                "HFAAAAACE"
+            ],
+            "solution": [
+                8,
+                4,
+                6,
+                2,
+                5,
+                0,
+                3,
+                1,
+                7
+            ],
+            "difficulty": "MEDIUM"
+        },
+        {
+            "id": "c045",
+            "number": 45,
+            "size": 9,
+            "regions": [
+                "BBDBCCGGG",
+                "BBBBCCGGG",
+                "BHBBECGGG",
+                "HHBEECCEE",
+                "HIBEEEEEE",
+                "IIEEEEEEE",
+                "IIIEEFEEE",
+                "IIIIIFEFF",
+                "IIFFFFFFA"
+            ],
+            "solution": [
+                2,
+                7,
+                3,
+                6,
+                0,
+                4,
+                1,
+                5,
+                8
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c046",
+            "number": 46,
+            "size": 9,
+            "regions": [
+                "DDDDGGGGA",
+                "DIDDIGAGA",
+                "IIIIIAAGA",
+                "IIIIIIAAA",
+                "BBIIIIIIA",
+                "HHHIIIIIA",
+                "HHFIIEEAA",
+                "FHFEEECCA",
+                "FFFFEECCC"
+            ],
+            "solution": [
+                6,
+                3,
+                8,
+                4,
+                0,
+                2,
+                5,
+                7,
+                1
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c047",
+            "number": 47,
+            "size": 9,
+            "regions": [
+                "BBBEEEEAA",
+                "BBBBBEEEA",
+                "HHBGBBAAA",
+                "HBBGDDAAA",
+                "HIBGGDDAA",
+                "IICGGGAAA",
+                "IIGGGAAAA",
+                "IIIIGGGGG",
+                "IIIIIIFGG"
+            ],
+            "solution": [
+                5,
+                3,
+                1,
+                4,
+                7,
+                2,
+                0,
+                8,
+                6
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c048",
+            "number": 48,
+            "size": 9,
+            "regions": [
+                "FFFFIIIID",
+                "BBFFIIIII",
+                "BFFFFFIII",
+                "FFFCIIICC",
+                "FFFCHCCCC",
+                "FFCCCCCCC",
+                "GGGCACCCC",
+                "GGAAAAAAC",
+                "GGAAAAECC"
+            ],
+            "solution": [
+                8,
+                5,
+                0,
+                2,
+                4,
+                7,
+                1,
+                3,
+                6
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c049",
+            "number": 49,
+            "size": 9,
+            "regions": [
+                "DIIIBBBCC",
+                "IIBIBBCCC",
+                "IIBBBCCCC",
+                "IIIGCCHHC",
+                "IIGGCCHAA",
+                "IGGCCCCEE",
+                "FGGGGCEEE",
+                "FGGGCCEEE",
+                "FFFGGEEEE"
+            ],
+            "solution": [
+                0,
+                4,
+                1,
+                6,
+                8,
+                5,
+                3,
+                7,
+                2
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c050",
+            "number": 50,
+            "size": 9,
+            "regions": [
+                "DDFFFCAAA",
+                "DDFFFFABA",
+                "DDFFFFFBB",
+                "DDDDFFFFB",
+                "DGGGFFEBB",
+                "GGGGEEEBB",
+                "HGGGEEEBE",
+                "GGGGEEEEE",
+                "GGGGIEEEE"
+            ],
+            "solution": [
+                5,
+                8,
+                3,
+                1,
+                7,
+                2,
+                0,
+                6,
+                4
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c051",
+            "number": 51,
+            "size": 9,
+            "regions": [
+                "GGGGGGGHH",
+                "GGFGGDDHH",
+                "GGFBBDDDI",
+                "GEFBDDDDD",
+                "EEFBBBADD",
+                "EEFFFAAAD",
+                "FEFFAAADD",
+                "FFFAAAAAA",
+                "FFFCAAAAA"
+            ],
+            "solution": [
+                7,
+                1,
+                8,
+                6,
+                4,
+                0,
+                2,
+                5,
+                3
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c052",
+            "number": 52,
+            "size": 9,
+            "regions": [
+                "IIIIIIEEE",
+                "IIIIIIEEE",
+                "IIIIIIIFH",
+                "CIAAIIFFH",
+                "CCADDBBBB",
+                "GCDDDBBBB",
+                "GCGDDDBBB",
+                "GGGGDDDBB",
+                "GGGDDDDDB"
+            ],
+            "solution": [
+                7,
+                3,
+                8,
+                6,
+                2,
+                5,
+                1,
+                4,
+                0
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c053",
+            "number": 53,
+            "size": 10,
+            "regions": [
+                "EEEECCCCCG",
+                "EEEBCFFCCG",
+                "EEEBBFFCCC",
+                "EEEEBFFCCC",
+                "EEEBBFFFCC",
+                "EAAABFFFFC",
+                "AAIIDDDFFF",
+                "AHHIDJJJFF",
+                "AAHHHHJFFF",
+                "AAHHHHJJJF"
+            ],
+            "solution": [
+                9,
+                0,
+                8,
+                4,
+                7,
+                1,
+                5,
+                3,
+                6,
+                2
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c054",
+            "number": 54,
+            "size": 10,
+            "regions": [
+                "AAAAAAAAAA",
+                "CCAAAAIAAA",
+                "CAAAAADDDD",
+                "CCGGGADDJJ",
+                "HCGGGGGDJJ",
+                "HHGGGGGGJB",
+                "HHHHEGGJJB",
+                "FHHHHGGGBB",
+                "FHHGGGGGBB",
+                "FFHHHGGGBB"
+            ],
+            "solution": [
+                3,
+                6,
+                0,
+                7,
+                5,
+                8,
+                4,
+                2,
+                9,
+                1
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c055",
+            "number": 55,
+            "size": 10,
+            "regions": [
+                "DDDDDDDDFF",
+                "HDEDDDFFFF",
+                "HEEEEEEFFF",
+                "EEEJEAFFFF",
+                "EJEJJAAGGG",
+                "EJJJJAAACC",
+                "EIJBJAAAAA",
+                "EIJBBAAAAA",
+                "EIIIBIIAAA",
+                "EIIIIIIAAA"
+            ],
+            "solution": [
+                3,
+                0,
+                8,
+                1,
+                7,
+                9,
+                5,
+                2,
+                4,
+                6
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c056",
+            "number": 56,
+            "size": 10,
+            "regions": [
+                "GFFFFIIJJJ",
+                "FFFDDIIJJJ",
+                "FFDDIIIJJJ",
+                "CDDIIIIJHJ",
+                "CDDDIIIIHJ",
+                "CCCDDIBHHJ",
+                "CACDDABHEE",
+                "CAAAAABHHB",
+                "CAAAAABBBB",
+                "CAAAAABBBB"
+            ],
+            "solution": [
+                0,
+                2,
+                8,
+                5,
+                3,
+                1,
+                9,
+                7,
+                4,
+                6
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c057",
+            "number": 57,
+            "size": 10,
+            "regions": [
+                "FFFFFAADDE",
+                "FIIFFAAEEE",
+                "IIIAAAAAEE",
+                "IIIGAAAABB",
+                "IIIGGGAGBG",
+                "IIIGGGAGGG",
+                "IIIIGGGGGG",
+                "IIIIGCGGGG",
+                "IJHHCCGGGG",
+                "IJHCCCCCGG"
+            ],
+            "solution": [
+                7,
+                0,
+                9,
+                6,
+                8,
+                4,
+                2,
+                5,
+                3,
+                1
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c058",
+            "number": 58,
+            "size": 10,
+            "regions": [
+                "BDDDCCCHGG",
+                "BDDDCCFHGG",
+                "BBDCCCFFFF",
+                "BDDCCCCCFF",
+                "BDDCCCCCCF",
+                "BBICCCCJFF",
+                "BIIICCCJFF",
+                "BBAIECCJJJ",
+                "BBAAEEEJJJ",
+                "BBBEEJJJJJ"
+            ],
+            "solution": [
+                7,
+                9,
+                6,
+                1,
+                5,
+                0,
+                3,
+                8,
+                2,
+                4
+            ],
+            "difficulty": "HARD"
+        },
+        {
+            "id": "c059",
+            "number": 59,
+            "size": 10,
+            "regions": [
+                "GGGJJJJJJJ",
+                "FFGJJJJJJJ",
+                "IFGJBBBJJJ",
+                "IIHBBJJJJJ",
+                "IIHHBBBJCA",
+                "IHHHHBBBCC",
+                "HHHHHBCCCE",
+                "HHHDDCCCEE",
+                "HHHDDCDCCE",
+                "HHHHDDDCEE"
+            ],
+            "solution": [
+                2,
+                0,
+                7,
+                1,
+                9,
+                5,
+                3,
+                6,
+                4,
+                8
+            ],
+            "difficulty": "EXPERT"
+        },
+        {
+            "id": "c060",
+            "number": 60,
+            "size": 10,
+            "regions": [
+                "AGADDDEEEE",
+                "AAAJJDEEEB",
+                "AJJJJEEBBB",
+                "AAJEEEEBBB",
+                "JJJJEECCBB",
+                "JJJJHHCCCB",
+                "JJJHHHHCCB",
+                "JIHHCCCCCC",
+                "IIIHHCCCFF",
+                "IIHHCCCCFF"
+            ],
+            "solution": [
+                1,
+                5,
+                0,
+                6,
+                3,
+                9,
+                4,
+                7,
+                2,
+                8
+            ],
+            "difficulty": "EXPERT"
+        }
+    ]
+}

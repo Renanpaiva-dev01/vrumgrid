@@ -1,0 +1,7 @@
+# Copie para local.properties (não versionado) e ajuste.
+sdk.dir=/caminho/para/Android/Sdk
+
+# IDs de PRODUÇÃO do AdMob (opcionais). Sem eles, a build release sai sem anúncios.
+# miaugrid.admob.appId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
+# miaugrid.admob.rewardedId=ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ
+# miaugrid.admob.interstitialId=ca-app-pub-XXXXXXXXXXXXXXXX/WWWWWWWWWW
