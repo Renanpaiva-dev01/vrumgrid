@@ -85,11 +85,17 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: ./gradlew :app:connectedDebugAndroidTest
+          # O emulator-runner executa cada linha com sh; a saída e o logcat ficam em arquivos
+          # para o passo seguinte resumir as falhas como anotações.
+          script: |
+            adb logcat -c || true
+            ./gradlew :app:connectedDebugAndroidTest > ui-test.log 2>&1 || (adb logcat -d > logcat.txt; tail -n 200 ui-test.log; exit 1)
 
       - name: Resumo das falhas
         if: failure()
-        run: python3 .github/scripts/junit_annotations.py app/build/outputs/androidTest-results
+        run: |
+          python3 .github/scripts/junit_annotations.py app/build/outputs/androidTest-results
+          python3 .github/scripts/log_annotations.py ui-test.log logcat.txt
 
       - name: Publicar relatórios
         if: always()
