@@ -12,11 +12,10 @@ detalhes, adesivo e número).
 > O nome interno do projeto continua `MiauGrid` (pacote `com.miaugrid`, classes `MiauGridApp`,
 > `MiauGridTheme`), para não mudar o applicationId nem os dados salvos. O nome exibido é VrumGrid.
 
-> **Situação da build (leia primeiro).** O código foi escrito num ambiente em que o Android SDK
-> e o Google Maven (`dl.google.com`) estavam bloqueados pela rede. Por isso **o APK ainda não foi
-> compilado nem executado em aparelho**. O núcleo do jogo foi compilado e testado de verdade
-> (88 testes passando). O código Android foi checado em tipos contra o Compose Desktop, que não
-> substitui uma build Android. Detalhes em [Resultado real da verificação](#resultado-real-da-verificação).
+> **Situação da build (leia primeiro).** O APK é compilado pelo GitHub Actions a cada push. Lá
+> os 88 testes do núcleo e os 14 testes de interface passam num emulador Android (API 34).
+> Ainda **não houve revisão visual feita por uma pessoa num aparelho real**. Detalhes em
+> [Resultado real da verificação](#resultado-real-da-verificação).
 
 ---
 
@@ -276,9 +275,8 @@ recuperações e sequência de dias. Não há ranking global.
 
 ## Pendências explícitas
 
-- **Compilar o APK e rodar no aparelho**: não foi feito (sem Android SDK no ambiente).
-- **Executar os testes de interface** (`app/src/androidTest`): escritos e checados em tipos, mas
-  não executados.
+- **Jogar num aparelho real** e revisar a interface (o APK roda no emulador do CI, mas ninguém
+  avaliou o visual ainda).
 - Navegação por leitor de tela célula a célula no tabuleiro: hoje o tabuleiro tem uma
   descrição geral, mas as células não são focáveis individualmente.
 - IDs de produção do AdMob, política de privacidade publicada e assinatura de release.
@@ -286,10 +284,10 @@ recuperações e sequência de dias. Não há ranking global.
   desenvolvimento" na tela inicial, sem botões.
 - Ranking global e validação em servidor: não implementados. As estatísticas são locais.
 - O modo `RULES_ONLY` existe e é testado no núcleo, mas não tem tela para escolhê-lo.
-- Revisão visual em aparelhos reais (tamanhos de fonte, telas pequenas, tablets). **Nenhuma tela
-  do tema de carros foi vista renderizada**: o ambiente não tem Android, e o Compose Desktop não
-  roda aqui sem `androidx.collection` (também só no Google Maven). Os desenhos foram checados só
-  em tipos.
+- Revisão visual em aparelhos reais (tamanhos de fonte, telas pequenas, tablets). Os testes de
+  interface verificam comportamento, não aparência.
+- No emulador do perfil `pixel_6` (API 34) o emulador caiu durante o teste de derrota. Com o
+  perfil padrão, tudo passa. A causa não foi investigada (pode ser do emulador).
 - Ícone do app: vetor novo (quarteirões com um carrinho), não visto num launcher real.
 
 ## Resultado real da verificação
@@ -300,9 +298,9 @@ SDK e os artefatos do Google Maven, incluindo o Android Gradle Plugin.
 | Verificação | Resultado |
 |---|---|
 | `./gradlew -p core test` | **88 testes, 0 falhas** (AdsAndRecovery 10, AutoMark 9, GameSession 22, Generator 2, HintEngine 4, LevelPack 4, Persistence 7, ProgressStatsDaily 8, RulesEngine 15, Solver 7) |
-| `./gradlew :app:assembleDebug` | **Não executado com sucesso:** `Plugin [id: 'com.android.application', version: '8.11.1'] was not found` (Google Maven inacessível) |
+| `./gradlew :app:assembleDebug` | Falha no ambiente de desenvolvimento (Google Maven bloqueado). **Passa no GitHub Actions** (JDK 17, ubuntu-latest). |
 | Checagem de tipos do app e dos testes de interface (`tools/ui-typecheck`) | Compila sem erros contra Compose Multiplatform Desktop 1.8.2 (inclui o tema de carros, a garagem e os testes novos). Encontrou e corrigiu 2 bugs reais (inferência de tipo em `withContext` e variável fora de escopo). APIs Android, AdMob, UMP, DataStore e androidx.lifecycle foram checadas só contra stubs. |
-| Testes de interface no emulador | Não executados |
+| `./gradlew :app:connectedDebugAndroidTest` (GitHub Actions, emulador API 34, perfil padrão) | **14 testes, 0 falhas** (GameFlow 7, GameScreen 5, GarageFlow 2). Os anúncios ficam desligados durante esses testes (`VrumGridTestRunner`). |
 
 Os 22 cenários obrigatórios de teste estão cobertos no núcleo: linha, coluna e região (1 a 3),
 adjacência horizontal, vertical e diagonal (4 a 6), carros fixos (7), coordenadas inválidas (8),
