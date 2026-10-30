@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.miaugrid.core.settings.CarBody
@@ -27,6 +28,16 @@ class GarageFlowTest {
 
     private val settings get() = ApplicationProvider.getApplicationContext<MiauGridApp>().container.playerData.settings
 
+    /**
+     * `performScrollTo` só rola o contêiner rolável mais próximo. Os itens da garagem ficam em
+     * linhas com rolagem horizontal dentro da coluna vertical, então rolamos a coluna primeiro.
+     */
+    private fun clickGarageItem(tag: String) {
+        compose.onNodeWithTag("garage").performScrollToNode(hasTestTag(tag))
+        compose.onNodeWithTag(tag).performScrollTo().performClick()
+        compose.waitForIdle()
+    }
+
     private fun waitFor(tag: String) = compose.waitUntil(5_000) {
         compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     }
@@ -36,14 +47,13 @@ class GarageFlowTest {
         waitFor("open_garage")
         compose.onNodeWithTag("open_garage").performScrollTo().performClick()
         waitFor("garage")
-        compose.onNodeWithTag("body_van").performScrollTo().performClick()
+        clickGarageItem("body_van")
         compose.waitUntil(3_000) { settings.value.car.body == CarBody.VAN }
-        compose.onNodeWithTag("decal_number").performScrollTo().performClick()
-        compose.waitForIdle()
+        clickGarageItem("decal_number")
         compose.onNodeWithTag("decal_number").assertIsSelected()
         compose.waitUntil(3_000) { settings.value.car.decal == CarDecal.NUMBER }
         waitFor("number_plus")
-        compose.onNodeWithTag("number_plus").performScrollTo().performClick()
+        clickGarageItem("number_plus")
 
         compose.waitUntil(3_000) { settings.value.car.number == 8 }
         assertEquals(CarBody.VAN, settings.value.car.body)
@@ -58,9 +68,9 @@ class GarageFlowTest {
         waitFor("open_garage")
         compose.onNodeWithTag("open_garage").performScrollTo().performClick()
         waitFor("garage")
-        compose.onNodeWithTag("body_formula").performScrollTo().performClick()
+        clickGarageItem("body_formula")
         compose.waitUntil(3_000) { settings.value.car.body == CarBody.FORMULA }
-        compose.onNodeWithTag("garage_reset").performScrollTo().performClick()
+        clickGarageItem("garage_reset")
         compose.waitUntil(3_000) { settings.value.car.body == CarBody.SEDAN }
     }
 }
