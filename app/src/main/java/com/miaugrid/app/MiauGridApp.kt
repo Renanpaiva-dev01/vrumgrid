@@ -12,4 +12,14 @@ class MiauGridApp : Application() {
         super.onCreate()
         container = AppContainer(this)
     }
+
+    companion object {
+        /**
+         * Ligado só pelo executor dos testes instrumentados, antes do `onCreate`: o SDK de
+         * anúncios carregando em segundo plano deixa a thread principal ocupada e torna os
+         * testes de interface instáveis.
+         */
+        @Volatile
+        var adsDisabledForTests: Boolean = false
+    }
 }

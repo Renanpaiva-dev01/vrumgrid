@@ -2,6 +2,7 @@ package com.miaugrid.app.di
 
 import android.app.Application
 import com.miaugrid.app.BuildConfig
+import com.miaugrid.app.MiauGridApp
 import com.miaugrid.app.ads.ActivityTracker
 import com.miaugrid.app.ads.AdMobProvider
 import com.miaugrid.app.ads.ConsentManager
@@ -57,7 +58,7 @@ class AppContainer(application: Application) {
         scope = applicationScope,
         rewardedUnitId = BuildConfig.REWARDED_AD_UNIT,
         interstitialUnitId = BuildConfig.INTERSTITIAL_AD_UNIT,
-        configuredEnabled = BuildConfig.ADS_ENABLED,
+        configuredEnabled = BuildConfig.ADS_ENABLED && !MiauGridApp.adsDisabledForTests,
     )
 
     val adService = AdService(adMob, InterstitialPolicy(levelsBetweenAds = 3, minIntervalMillis = 3 * 60_000L))
