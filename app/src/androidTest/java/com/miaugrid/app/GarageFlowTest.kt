@@ -27,7 +27,7 @@ class GarageFlowTest {
     private val settings get() = ApplicationProvider.getApplicationContext<MiauGridApp>().container.playerData.settings
 
     private fun waitFor(tag: String) = compose.waitUntil(5_000) {
-        compose.onAllNodes(hasTestTag(tag)).fetchSemanticsNodes().isNotEmpty()
+        compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     }
 
     @Test
@@ -36,11 +36,14 @@ class GarageFlowTest {
         compose.onNodeWithTag("open_garage").performScrollTo().performClick()
         waitFor("garage")
         compose.onNodeWithTag("body_van").performScrollTo().performClick()
+        compose.waitUntil(3_000) { settings.value.car.body == CarBody.VAN }
         compose.onNodeWithTag("decal_number").performScrollTo().performClick()
+        compose.waitUntil(3_000) { settings.value.car.decal == CarDecal.NUMBER }
         waitFor("number_plus")
         compose.onNodeWithTag("number_plus").performScrollTo().performClick()
 
-        compose.waitUntil(3_000) { settings.value.car.body == CarBody.VAN && settings.value.car.number == 8 }
+        compose.waitUntil(3_000) { settings.value.car.number == 8 }
+        assertEquals(CarBody.VAN, settings.value.car.body)
         assertEquals(CarDecal.NUMBER, settings.value.car.decal)
 
         compose.activityRule.scenario.recreate()

@@ -59,6 +59,8 @@ class GameFlowTest {
         openLevel1()
         val wrong = Levels.wrongCells(puzzle).first()
         board().tapCell(wrong, n)
+        // O toque simples só é confirmado depois do intervalo de toque duplo.
+        compose.mainClock.advanceTimeBy(1_000)
         compose.waitForIdle()
         board().assertContentDescriptionContains("1 marcações")
 
@@ -77,7 +79,7 @@ class GameFlowTest {
         openLevel1()
         val start = GameSession(puzzle, GameModeConfig.CLASSIC).newGame("t")
         val right = puzzle.solution.positions().first { it !in start.cats }
-        val expected = GameSession(puzzle, GameModeConfig.CLASSIC).autoMarksFor(right, start.cats, start.marks).size
+        val expected = GameSession(puzzle, GameModeConfig.CLASSIC).autoMarksFor(right, start.cats + right, start.marks).size
         board().doubleTapCell(right, n)
         compose.waitForIdle()
         board().assertContentDescriptionContains("$expected marcações")
