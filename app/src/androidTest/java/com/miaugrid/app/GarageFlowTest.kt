@@ -1,5 +1,6 @@
 package com.miaugrid.app
 
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -38,6 +39,8 @@ class GarageFlowTest {
         compose.onNodeWithTag("body_van").performScrollTo().performClick()
         compose.waitUntil(3_000) { settings.value.car.body == CarBody.VAN }
         compose.onNodeWithTag("decal_number").performScrollTo().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("decal_number").assertIsSelected()
         compose.waitUntil(3_000) { settings.value.car.decal == CarDecal.NUMBER }
         waitFor("number_plus")
         compose.onNodeWithTag("number_plus").performScrollTo().performClick()

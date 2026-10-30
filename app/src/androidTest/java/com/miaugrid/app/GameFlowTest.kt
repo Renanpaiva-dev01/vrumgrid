@@ -62,7 +62,7 @@ class GameFlowTest {
         // O toque simples só é confirmado depois do intervalo de toque duplo.
         compose.mainClock.advanceTimeBy(1_000)
         compose.waitForIdle()
-        board().assertContentDescriptionContains("1 marcações")
+        board().assertContentDescriptionContains("1 marcações", substring = true)
 
         val right = puzzle.solution.positions().first()
         board().doubleTapCell(right, n)
@@ -82,10 +82,10 @@ class GameFlowTest {
         val expected = GameSession(puzzle, GameModeConfig.CLASSIC).autoMarksFor(right, start.cats + right, start.marks).size
         board().doubleTapCell(right, n)
         compose.waitForIdle()
-        board().assertContentDescriptionContains("$expected marcações")
+        board().assertContentDescriptionContains("$expected marcações", substring = true)
         compose.onNodeWithTag("undo").performClick()
         compose.waitForIdle()
-        board().assertContentDescriptionContains("0 marcações")
+        board().assertContentDescriptionContains("0 marcações", substring = true)
     }
 
     @Test

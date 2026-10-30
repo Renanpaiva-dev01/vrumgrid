@@ -16,13 +16,17 @@ def esc(v):
     return v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
-budget = 9
+budget = 4
 for path in sys.argv[1:]:
     if not os.path.exists(path):
         print(f"::warning title=Log ausente::{path} não foi gerado")
         continue
     with open(path, encoding="utf-8", errors="replace") as f:
         lines = f.readlines()
+    if path.endswith("logcat.txt"):
+        # Só as linhas dos processos do app e do teste (o resto do sistema gera muito ruído).
+        pids = {l.split()[2] for l in lines if "com.miaugrid" in l and len(l.split()) > 2}
+        lines = [l for l in lines if len(l.split()) > 2 and l.split()[2] in pids]
     hits = []
     for i, line in enumerate(lines):
         if PATTERNS.search(line) and "at androidx." not in line and "at java." not in line:
