@@ -35,6 +35,20 @@ cp local.properties.example local.properties   # ajuste sdk.dir
 
 A build de depuração usa o sufixo `.debug` no applicationId e **somente anúncios de teste**.
 
+### Compilar e testar online (sem Android Studio)
+
+**GitHub Actions** (`.github/workflows/android.yml`): ao enviar o projeto para um repositório no
+GitHub, cada push roda os testes do núcleo e compila o APK de depuração nos servidores do GitHub.
+O APK fica na execução, em *Actions → (execução) → Artifacts → vrumgrid-debug-apk* (um .zip com o
+.apk). Os testes de interface rodam num emulador a cada push na `main`, ou manualmente em
+*Actions → Android → Run workflow*. Em repositório público os minutos são gratuitos; em privado
+entram na cota gratuita mensal do GitHub.
+
+**Testar no navegador:** envie o `app-debug.apk` para um emulador on-line como o Appetize.io
+(tem plano gratuito com minutos limitados) e jogue pelo navegador, ou instale o APK direto num
+celular Android (é preciso permitir "instalar apps desconhecidos"). Os anúncios de teste do Google
+podem não carregar em emuladores on-line; o jogo funciona sem eles.
+
 ## Arquitetura
 
 ```
