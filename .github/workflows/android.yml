@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
@@ -32,6 +32,10 @@ jobs:
 
       - name: Testes do núcleo
         run: ./gradlew -p core test
+
+      - name: Resumo das falhas do núcleo
+        if: failure()
+        run: python3 .github/scripts/junit_annotations.py core/build/test-results
 
       - name: Compilar APK de depuração
         run: ./gradlew :app:assembleDebug
@@ -58,9 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
@@ -81,6 +85,10 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: ./gradlew :app:connectedDebugAndroidTest
+
+      - name: Resumo das falhas
+        if: failure()
+        run: python3 .github/scripts/junit_annotations.py app/build/outputs/androidTest-results
 
       - name: Publicar relatórios
         if: always()
