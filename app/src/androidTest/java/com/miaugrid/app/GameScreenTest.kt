@@ -9,10 +9,13 @@ import com.miaugrid.app.ui.game.GameOverlays
 import com.miaugrid.app.ui.game.GameScreen
 import com.miaugrid.app.ui.game.GameUiState
 import com.miaugrid.app.ui.game.Overlay
+import com.miaugrid.app.ui.game.Tool
 import com.miaugrid.app.ui.theme.MiauGridTheme
 import com.miaugrid.core.game.GameAction
 import com.miaugrid.core.game.GameModeConfig
 import com.miaugrid.core.game.GameSession
+import com.miaugrid.core.settings.ControlMode
+import com.miaugrid.core.settings.UserSettings
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +39,10 @@ class GameScreenTest {
                     onRestart = {}, onPause = {}, onSelectTool = {}, onHintAction = {}, onDismissHint = {},
                     onMessageShown = {}, onExit = {},
                     overlays = {
-                        GameOverlays(ui, {}, {}, {}, {}, {}, {}, onRecover, {})
+                        GameOverlays(
+                            ui = ui, onResume = {}, onRestartRequested = {}, onRestartConfirmed = {}, onOpenSettings = {},
+                            onExit = {}, onNextLevel = {}, onRecover = onRecover, onWatchAdForHint = {},
+                        )
                     },
                 )
             }
@@ -56,6 +62,26 @@ class GameScreenTest {
         render(GameUiState(loading = false, puzzle = puzzle, game = state), onUndo = { calls++ })
         compose.onNodeWithTag("undo").performClick()
         assertEquals(1, calls)
+    }
+
+    @Test
+    fun ferramentaCarroEhSelecionavel() {
+        var chosen: Tool? = null
+        compose.setContent {
+            MiauGridTheme {
+                GameScreen(
+                    ui = GameUiState(
+                        loading = false, puzzle = puzzle, game = session.newGame("t"),
+                        settings = UserSettings(controlMode = ControlMode.TOOL_SELECT),
+                    ),
+                    onTap = {}, onDoubleTap = {}, onDragMarks = { _, _ -> }, onUndo = {}, onHint = {},
+                    onRestart = {}, onPause = {}, onSelectTool = { chosen = it }, onHintAction = {}, onDismissHint = {},
+                    onMessageShown = {}, onExit = {}, overlays = {},
+                )
+            }
+        }
+        compose.onNodeWithTag("tool_car").performClick()
+        assertEquals(Tool.CAR, chosen)
     }
 
     @Test

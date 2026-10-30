@@ -2,6 +2,7 @@ package com.miaugrid.app.ui.game
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -15,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.miaugrid.app.ui.components.CatIcon
+import com.miaugrid.app.ui.components.CarIcon
+import com.miaugrid.app.ui.components.Confetti
+import com.miaugrid.app.ui.components.DrivingRoad
+import com.miaugrid.app.ui.components.LocalCarLook
 import com.miaugrid.app.ui.components.formatDuration
 
 /** Pausa, confirmação de reinício, vitória, derrota, recuperação e oferta de dica. */
@@ -31,11 +35,12 @@ fun GameOverlays(
     onRecover: () -> Unit,
     onWatchAdForHint: () -> Unit,
 ) {
+    val look = LocalCarLook.current
     when (val overlay = ui.overlay) {
         Overlay.None -> Unit
         Overlay.Paused -> OverlayCard("pause_menu") {
-            Text("Pausa", style = MaterialTheme.typography.headlineMedium)
-            CatIcon(Modifier.size(72.dp), tilt = 8f)
+            Text("Pit stop", style = MaterialTheme.typography.headlineMedium)
+            DrivingRoad(look, height = 56.dp, periodMillis = 4200)
             Button(onClick = onResume, modifier = Modifier.fillMaxWidth().testTag("resume")) { Text("Continuar") }
             OutlinedButton(onClick = onRestartRequested, modifier = Modifier.fillMaxWidth().testTag("pause_restart")) { Text("Reiniciar fase") }
             OutlinedButton(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth().testTag("pause_settings")) { Text("Configurações") }
@@ -43,19 +48,15 @@ fun GameOverlays(
         }
         Overlay.ConfirmRestart -> OverlayCard("confirm_restart") {
             Text("Reiniciar a fase?", style = MaterialTheme.typography.titleLarge)
-            Text("Os gatos e marcações desta tentativa serão apagados.", textAlign = TextAlign.Center)
+            Text("Os carros e marcações desta tentativa serão apagados.", textAlign = TextAlign.Center)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp, androidx.compose.ui.Alignment.CenterHorizontally)) {
                 OutlinedButton(onClick = onResume) { Text("Cancelar") }
                 Button(onClick = onRestartConfirmed, modifier = Modifier.testTag("confirm_restart_yes")) { Text("Reiniciar") }
             }
         }
-        is Overlay.Victory -> OverlayCard("victory") {
-            Row(horizontalArrangement = Arrangement.spacedBy((-8).dp)) {
-                CatIcon(Modifier.size(64.dp), tilt = -12f)
-                CatIcon(Modifier.size(80.dp))
-                CatIcon(Modifier.size(64.dp), tilt = 12f)
-            }
-            Text("Fase concluída!", style = MaterialTheme.typography.headlineMedium)
+        is Overlay.Victory -> OverlayCard("victory", background = { Confetti(overlay, Modifier.fillMaxSize()) }) {
+            DrivingRoad(look, height = 64.dp, periodMillis = 1800)
+            Text("Todos estacionados!", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
             Text("Tempo: ${formatDuration(overlay.info.timeMillis)} · Erros: ${overlay.info.mistakes}")
             if (overlay.info.newRecord) Text("Novo recorde de tempo!", color = MaterialTheme.colorScheme.primary)
             overlay.info.note?.let { Text(it, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium) }
@@ -65,13 +66,13 @@ fun GameOverlays(
             OutlinedButton(onClick = onExit, modifier = Modifier.fillMaxWidth().testTag("victory_exit")) { Text("Voltar ao menu") }
         }
         is Overlay.Defeat -> OverlayCard("defeat") {
-            CatIcon(Modifier.size(72.dp), tilt = -20f)
-            Text("Sem vidas!", style = MaterialTheme.typography.headlineMedium)
+            CarIcon(look, Modifier.size(72.dp), rotation = -35f)
+            Text("Pneus furados!", style = MaterialTheme.typography.headlineMedium)
             Text("O tabuleiro fica como está. Escolha como continuar.", textAlign = TextAlign.Center)
             overlay.notice?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center, modifier = Modifier.testTag("defeat_notice")) }
             when {
                 ui.canRecover && ui.adsEnabled -> Button(onClick = onRecover, modifier = Modifier.fillMaxWidth().testTag("recover")) {
-                    Text("Assistir anúncio: +${ui.config.recovery.livesRestored} vida")
+                    Text("Assistir anúncio: +${ui.config.recovery.livesRestored} pneu")
                 }
                 ui.canRecover -> Text(
                     "A recuperação por anúncio está indisponível agora (sem conexão ou sem anúncios).",
@@ -85,7 +86,7 @@ fun GameOverlays(
         Overlay.Recovering -> OverlayCard("recovering") {
             Text("Carregando anúncio…", style = MaterialTheme.typography.titleLarge)
             CircularProgressIndicator()
-            Text("A vida só é devolvida quando o anúncio confirma a recompensa.", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall)
+            Text("O pneu novo só é colocado quando o anúncio confirma a recompensa.", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall)
         }
         Overlay.HintAdOffer -> OverlayCard("hint_offer") {
             Text("Sem dicas grátis", style = MaterialTheme.typography.titleLarge)

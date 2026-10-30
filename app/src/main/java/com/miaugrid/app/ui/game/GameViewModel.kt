@@ -149,21 +149,25 @@ class GameViewModel(
         if (!state.interactive) return
         val game = state.game ?: return
         _ui.update { it.copy(selected = position) }
-        val useCatTool = state.settings.controlMode == ControlMode.TOOL_SELECT && state.tool == Tool.CAT
+        val useCarTool = state.settings.controlMode == ControlMode.TOOL_SELECT && state.tool == Tool.CAR
         when {
-            position in game.cats -> if (useCatTool) dispatch(GameAction.RemoveCat(position))
-            useCatTool -> dispatch(GameAction.PlaceCat(position))
+            position in game.cats -> if (useCarTool) dispatch(GameAction.RemoveCat(position))
+            useCarTool -> dispatch(GameAction.PlaceCat(position, autoMark = state.settings.autoMarkWithCar))
             else -> dispatch(GameAction.ToggleMark(position))
         }
     }
 
-    /** Toque duplo: coloca um gato (ou remove um gato do jogador). */
+    /** Toque duplo: estaciona um carro (ou retira um carro do jogador). */
     fun onCellDoubleTap(position: Position) {
         val state = _ui.value
         if (!state.interactive) return
         val game = state.game ?: return
         _ui.update { it.copy(selected = position) }
-        if (position in game.cats) dispatch(GameAction.RemoveCat(position)) else dispatch(GameAction.PlaceCat(position))
+        if (position in game.cats) {
+            dispatch(GameAction.RemoveCat(position))
+        } else {
+            dispatch(GameAction.PlaceCat(position, autoMark = state.settings.autoMarkWithCar))
+        }
     }
 
     fun onDragMarks(cells: List<Position>, marked: Boolean) {
@@ -172,6 +176,9 @@ class GameViewModel(
     }
 
     fun onSelectTool(tool: Tool) = _ui.update { it.copy(tool = tool) }
+
+    /** O tabuleiro avisa que o carro terminou o percurso; evita repetir a animação ao voltar à tela. */
+    fun onDriveFinished(id: Long) = _ui.update { if (it.drive?.id == id) it.copy(drive = null) else it }
 
     fun onUndo() {
         if (_ui.value.interactive) dispatch(GameAction.Undo)
@@ -268,12 +275,13 @@ class GameViewModel(
     fun onHintAction() {
         val hint = _ui.value.hint?.hint ?: return
         val game = _ui.value.game ?: return
+        val autoMark = _ui.value.settings.autoMarkWithCar
         _ui.update { it.copy(hint = null) }
         when (hint) {
             is Hint.MarkedSolutionCell -> dispatch(GameAction.SetMarks(hint.cells.toList(), false))
             is Hint.WrongCats -> hint.cells.forEach { dispatch(GameAction.RemoveCat(it)) }
-            is Hint.ForcedPlacement -> if (config.hints.allowReveal) dispatch(GameAction.RevealCat(hint.position))
-            is Hint.CorrectPosition -> if (config.hints.allowReveal) dispatch(GameAction.RevealCat(hint.position))
+            is Hint.ForcedPlacement -> if (config.hints.allowReveal) dispatch(GameAction.RevealCat(hint.position, autoMark))
+            is Hint.CorrectPosition -> if (config.hints.allowReveal) dispatch(GameAction.RevealCat(hint.position, autoMark))
             is Hint.Elimination -> dispatch(GameAction.SetMarks(hint.cells.filter { it !in game.cats }, true))
         }
     }
@@ -387,9 +395,12 @@ class GameViewModel(
     private fun handleEvent(event: GameEvent, state: GameState) {
         when (event) {
             is GameEvent.CatPlaced -> {
-                container.soundPlayer.play(Sound.PLACE)
+                container.soundPlayer.play(if (event.autoMarked.isEmpty()) Sound.PLACE else Sound.ENGINE)
                 haptic(HapticCue.LIGHT)
-                _ui.update { it.copy(pulse = PlacementPulse(++eventCounter, event.position), feedback = null) }
+                val drive = event.autoMarked.takeIf { it.isNotEmpty() }?.let {
+                    DriveAnimation(++eventCounter, event.position, it, _ui.value.settings.carSpeed.millisPerCell)
+                }
+                _ui.update { it.copy(pulse = PlacementPulse(++eventCounter, event.position), feedback = null, drive = drive ?: it.drive) }
             }
             is GameEvent.CatRejected -> {
                 container.soundPlayer.play(Sound.ERROR)
@@ -402,10 +413,10 @@ class GameViewModel(
             }
             is GameEvent.MarksChanged -> container.soundPlayer.play(Sound.MARK)
             is GameEvent.CatRemoved -> container.soundPlayer.play(Sound.MARK)
-            is GameEvent.Undone -> _ui.update { it.copy(feedback = null) }
+            is GameEvent.Undone -> _ui.update { it.copy(feedback = null, drive = null) }
             GameEvent.Restarted -> {
                 accountedPlayMillis = 0
-                _ui.update { it.copy(overlay = Overlay.None, feedback = null, hint = null) }
+                _ui.update { it.copy(overlay = Overlay.None, feedback = null, hint = null, drive = null) }
             }
             GameEvent.Won -> onWon(state)
             is GameEvent.Lost -> {
@@ -419,7 +430,6 @@ class GameViewModel(
     }
 
     private fun onWon(state: GameState) {
-        container.soundPlayer.play(Sound.WIN)
         container.adService.onLevelCompleted()
         container.analytics.track(AnalyticsEvent.LevelWon(state.levelId, state.elapsedMillis, state.mistakes))
         viewModelScope.launch {
@@ -448,6 +458,10 @@ class GameViewModel(
             container.playerData.updateStats { StatsRules.onWin(it, state.size, state.elapsedMillis) }
             addPlayTime(state)
             container.playerData.clearSavedGame(mode)
+            // Deixa o carrinho terminar o trajeto antes da comemoração.
+            val drive = _ui.value.drive
+            if (drive != null) delay((drive.route.size * drive.millisPerCell + 250L).coerceAtMost(MAX_VICTORY_DELAY_MS))
+            container.soundPlayer.play(Sound.WIN)
             _ui.update {
                 it.copy(
                     hint = null,
@@ -519,6 +533,7 @@ class GameViewModel(
         const val ARG_KEY = "key"
         private const val TICK_MS = 1_000L
         private const val PERIODIC_SAVE_MS = 15_000L
+        private const val MAX_VICTORY_DELAY_MS = 2_500L
         /** Desafios diários são gerados pelo algoritmo; mudar o gerador exige mudar esta versão. */
         private const val DAILY_CONTENT_VERSION = 1
 

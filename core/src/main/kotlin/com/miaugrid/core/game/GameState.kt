@@ -9,9 +9,17 @@ enum class GameStatus { PLAYING, WON, LOST }
 /** Jogadas reversíveis registradas no histórico de desfazer. */
 @Serializable
 sealed interface Move {
-    /** Gato colocado; [clearedMark] indica que havia um X na célula. */
+    /**
+     * Peça colocada; [clearedMark] indica que havia um X na célula. [autoMarked] são os X
+     * que a marcação automática acrescentou junto (desfeitos na mesma jogada).
+     */
     @Serializable
-    data class PlaceCat(val position: Position, val clearedMark: Boolean, val revealed: Boolean = false) : Move
+    data class PlaceCat(
+        val position: Position,
+        val clearedMark: Boolean,
+        val revealed: Boolean = false,
+        val autoMarked: List<Position> = emptyList(),
+    ) : Move
 
     @Serializable
     data class RemoveCat(val position: Position) : Move

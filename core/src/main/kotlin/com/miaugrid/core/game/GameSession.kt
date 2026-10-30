@@ -7,7 +7,11 @@ import com.miaugrid.core.rules.RulesEngine
 import com.miaugrid.core.rules.ViolationType
 
 sealed interface GameAction {
-    data class PlaceCat(val position: Position) : GameAction
+    /**
+     * Coloca uma peça. Com [autoMark], as células que ficam comprovadamente impossíveis
+     * (mesma linha, coluna, região ou vizinhança) recebem X na mesma jogada.
+     */
+    data class PlaceCat(val position: Position, val autoMark: Boolean = false) : GameAction
     data class RemoveCat(val position: Position) : GameAction
     data class ToggleMark(val position: Position) : GameAction
     /** Marca ou desmarca várias células de uma vez (gesto de arrastar). */
@@ -18,7 +22,7 @@ sealed interface GameAction {
     /** Consome uma dica: grátis enquanto houver, ou paga por anúncio já confirmado. */
     data class ConsumeHint(val paidWithRewardedAd: Boolean) : GameAction
     /** Coloca um gato da solução oficial por meio de uma dica de revelação. */
-    data class RevealCat(val position: Position) : GameAction
+    data class RevealCat(val position: Position, val autoMark: Boolean = false) : GameAction
     /** Aplica a recuperação vinculada a [rewardId], depois da confirmação do SDK. */
     data class ApplyRecovery(val rewardId: String) : GameAction
 }
@@ -30,7 +34,12 @@ enum class IgnoreReason {
 }
 
 sealed interface GameEvent {
-    data class CatPlaced(val position: Position, val revealed: Boolean) : GameEvent
+    /** [autoMarked]: X acrescentados automaticamente, na ordem em que devem ser animados. */
+    data class CatPlaced(
+        val position: Position,
+        val revealed: Boolean,
+        val autoMarked: List<Position> = emptyList(),
+    ) : GameEvent
     /** Colocação recusada. [lifeLost] diz se houve penalidade. */
     data class CatRejected(val check: PlacementCheck, val lifeLost: Boolean, val livesLeft: Int) : GameEvent
     data class CatRemoved(val position: Position) : GameEvent
@@ -88,7 +97,7 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
         RulesEngine.checkPlacement(layout, state.cats, position, state.fixedCats, puzzle.solution)
 
     fun reduce(state: GameState, action: GameAction): ActionOutcome = when (action) {
-        is GameAction.PlaceCat -> placeCat(state, action.position)
+        is GameAction.PlaceCat -> placeCat(state, action.position, action.autoMark)
         is GameAction.RemoveCat -> removeCat(state, action.position)
         is GameAction.ToggleMark -> toggleMark(state, action.position)
         is GameAction.SetMarks -> setMarks(state, action.positions, action.marked)
@@ -96,14 +105,14 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
         GameAction.Restart -> restart(state)
         is GameAction.Tick -> tick(state, action.deltaMillis)
         is GameAction.ConsumeHint -> consumeHint(state, action.paidWithRewardedAd)
-        is GameAction.RevealCat -> reveal(state, action.position)
+        is GameAction.RevealCat -> reveal(state, action.position, action.autoMark)
         is GameAction.ApplyRecovery -> applyRecovery(state, action.rewardId)
     }
 
     private fun ignored(state: GameState, reason: IgnoreReason) =
         ActionOutcome(state, listOf(GameEvent.Ignored(reason)))
 
-    private fun placeCat(state: GameState, position: Position): ActionOutcome {
+    private fun placeCat(state: GameState, position: Position, autoMark: Boolean): ActionOutcome {
         if (state.status != GameStatus.PLAYING) return ignored(state, IgnoreReason.GAME_NOT_ACTIVE)
         val check = checkPlacement(state, position)
         when {
@@ -116,13 +125,48 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
             ValidationPolicy.RULES_ONLY -> !check.respectsRules
         }
         if (penalized) return penalize(state, check)
+        return withWinCheck(commitPlacement(state, position, revealed = false, autoMark = autoMark))
+    }
+
+    /** Coloca a peça, aplica a marcação automática e registra tudo como uma única jogada. */
+    private fun commitPlacement(state: GameState, position: Position, revealed: Boolean, autoMark: Boolean): Pair<GameState, GameEvent> {
         val hadMark = position in state.marks
-        val placed = state.copy(
-            cats = state.cats + position,
-            marks = state.marks - position,
-            history = state.history + Move.PlaceCat(position, hadMark),
+        val cats = state.cats + position
+        val marks = state.marks - position
+        val auto = if (autoMark) autoMarksFor(position, cats, marks) else emptyList()
+        val next = state.copy(
+            cats = cats,
+            marks = marks + auto,
+            history = state.history + Move.PlaceCat(position, hadMark, revealed, auto),
         )
-        return withWinCheck(placed, GameEvent.CatPlaced(position, revealed = false))
+        return next to GameEvent.CatPlaced(position, revealed, auto)
+    }
+
+    /**
+     * Células que a nova peça torna impossíveis e que ainda não têm X, ordenadas por
+     * proximidade a partir da peça (vizinho mais próximo), formando o trajeto do carrinho.
+     */
+    fun autoMarksFor(position: Position, cats: Set<Position>, marks: Set<Position>): List<Position> {
+        val region = layout.regionAt(position)
+        val targets = layout.allPositions().filterTo(LinkedHashSet()) { p ->
+            p !in cats && p !in marks &&
+                (p.row == position.row || p.col == position.col || layout.regionAt(p) == region || p.touches(position))
+        }
+        val route = ArrayList<Position>(targets.size)
+        var current = position
+        while (targets.isNotEmpty()) {
+            val next = targets.minWith(compareBy<Position>({ distance2(current, it) }, { it.row }, { it.col }))
+            route += next
+            targets -= next
+            current = next
+        }
+        return route
+    }
+
+    private fun distance2(a: Position, b: Position): Int {
+        val dr = a.row - b.row
+        val dc = a.col - b.col
+        return dr * dr + dc * dc
     }
 
     private fun penalize(state: GameState, check: PlacementCheck): ActionOutcome {
@@ -136,7 +180,8 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
         return ActionOutcome(next, events)
     }
 
-    private fun withWinCheck(state: GameState, event: GameEvent): ActionOutcome {
+    private fun withWinCheck(placement: Pair<GameState, GameEvent>): ActionOutcome {
+        val (state, event) = placement
         val evaluation = RulesEngine.evaluate(layout, state.cats, puzzle.solution)
         return if (evaluation.isSolved) {
             ActionOutcome(state.copy(status = GameStatus.WON), listOf(event, GameEvent.Won))
@@ -179,7 +224,7 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
         val next = when (move) {
             is Move.PlaceCat -> state.copy(
                 cats = state.cats - move.position,
-                marks = if (move.clearedMark) state.marks + move.position else state.marks,
+                marks = (state.marks - move.autoMarked.toSet()).let { if (move.clearedMark) it + move.position else it },
             )
             is Move.RemoveCat -> state.copy(cats = state.cats + move.position)
             is Move.SetMarks -> {
@@ -220,19 +265,13 @@ class GameSession(val puzzle: Puzzle, val config: GameModeConfig) {
         return ActionOutcome(next, listOf(GameEvent.HintConsumed(paidWithAd)))
     }
 
-    private fun reveal(state: GameState, position: Position): ActionOutcome {
+    private fun reveal(state: GameState, position: Position, autoMark: Boolean): ActionOutcome {
         if (state.status != GameStatus.PLAYING) return ignored(state, IgnoreReason.GAME_NOT_ACTIVE)
         if (position !in puzzle.solution) return ignored(state, IgnoreReason.NOT_IN_SOLUTION)
         if (position in state.cats) return ignored(state, IgnoreReason.CELL_HAS_CAT)
         val check = RulesEngine.checkPlacement(layout, state.cats, position, state.fixedCats)
         if (!check.isValid) return ignored(state, IgnoreReason.CONFLICT)
-        val hadMark = position in state.marks
-        val next = state.copy(
-            cats = state.cats + position,
-            marks = state.marks - position,
-            history = state.history + Move.PlaceCat(position, hadMark, revealed = true),
-        )
-        return withWinCheck(next, GameEvent.CatPlaced(position, revealed = true))
+        return withWinCheck(commitPlacement(state, position, revealed = true, autoMark = autoMark))
     }
 
     private fun applyRecovery(state: GameState, rewardId: String): ActionOutcome {

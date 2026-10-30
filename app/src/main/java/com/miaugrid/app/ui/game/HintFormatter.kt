@@ -10,7 +10,7 @@ import com.miaugrid.core.solver.Technique
 /** Textos em português para dicas e erros. Mantidos fora do núcleo (apresentação). */
 object HintFormatter {
 
-    fun regionLabel(id: Int): String = "região ${'A' + id} (${RegionColorNames[id % RegionColorNames.size]})"
+    fun regionLabel(id: Int): String = "bairro ${'A' + id} (${RegionColorNames[id % RegionColorNames.size]})"
 
     fun unitLabel(unit: BoardUnit): String = when (unit) {
         is BoardUnit.Row -> "linha ${unit.index + 1}"
@@ -26,33 +26,33 @@ object HintFormatter {
 
     fun describe(hint: Hint, allowReveal: Boolean): HintDisplay = when (hint) {
         is Hint.MarkedSolutionCell -> HintDisplay(
-            hint, "Há um X numa célula que precisa de um gato. Remova a marcação destacada.",
+            hint, "Tem um X numa vaga que precisa de um carro. Remova a marcação destacada.",
             emptyList(), hint.cells, hint.cells.first(), "Remover X",
         )
         is Hint.WrongCats -> HintDisplay(
-            hint, "O gato destacado não faz parte da solução.",
-            emptyList(), hint.cells, hint.cells.first(), "Remover gato",
+            hint, "O carro destacado não faz parte da solução.",
+            emptyList(), hint.cells, hint.cells.first(), "Retirar carro",
         )
         is Hint.ForcedPlacement -> HintDisplay(
-            hint, "A ${unitLabel(hint.unit)} só tem uma posição possível para um gato.",
-            listOf(hint.unit), setOf(hint.position), hint.position, if (allowReveal) "Colocar gato" else null,
+            hint, "${unitLabel(hint.unit).replaceFirstChar { it.uppercase() }} só tem uma vaga possível para um carro.",
+            listOf(hint.unit), setOf(hint.position), hint.position, if (allowReveal) "Estacionar carro" else null,
         )
         is Hint.CorrectPosition -> HintDisplay(
-            hint, "Sem dedução simples aqui: a célula destacada tem um gato na solução.",
-            emptyList(), setOf(hint.position), hint.position, if (allowReveal) "Colocar gato" else null,
+            hint, "Sem dedução simples aqui: a vaga destacada tem um carro na solução.",
+            emptyList(), setOf(hint.position), hint.position, if (allowReveal) "Estacionar carro" else null,
         )
         is Hint.Elimination -> {
             val text = when (hint.technique) {
                 Technique.CONFINEMENT ->
-                    "Todas as posições possíveis da ${list(hint.sources)} estão na ${list(hint.targets)}. " +
-                        "Por isso, as outras células destacadas não podem ter gato."
+                    "Todas as vagas possíveis de ${list(hint.sources)} estão em ${list(hint.targets)}. " +
+                        "Por isso, as outras células destacadas não podem ter carro."
                 Technique.GROUP_CONFINEMENT ->
                     "${list(hint.sources).replaceFirstChar { it.uppercase() }} só cabem em ${list(hint.targets)}. " +
                         "As demais células dessas áreas ficam impossíveis."
                 Technique.CONTRADICTION ->
-                    "Um gato na célula destacada deixaria uma linha, coluna ou região sem nenhuma posição possível."
+                    "Um carro na célula destacada deixaria uma linha, coluna ou bairro sem nenhuma vaga possível."
                 Technique.CAT_ELIMINATION, Technique.SINGLE_CANDIDATE ->
-                    "As células destacadas não podem ter gato por causa dos gatos já colocados."
+                    "As células destacadas não podem ter carro por causa dos carros já estacionados."
             }
             HintDisplay(hint, text, hint.sources, hint.cells, hint.cause, "Marcar com X")
         }
@@ -62,13 +62,13 @@ object HintFormatter {
     fun rejection(check: PlacementCheck): String {
         val types = check.violations.map { it.type }.toSet()
         return when {
-            ViolationType.ROW_OCCUPIED in types -> "Já existe um gato nesta linha."
-            ViolationType.COLUMN_OCCUPIED in types -> "Já existe um gato nesta coluna."
-            ViolationType.REGION_OCCUPIED in types -> "Já existe um gato nesta região."
-            ViolationType.ADJACENT_HORIZONTAL in types -> "Gatos não podem ficar lado a lado."
-            ViolationType.ADJACENT_VERTICAL in types -> "Gatos não podem ficar um acima do outro."
-            ViolationType.ADJACENT_DIAGONAL in types -> "Gatos não podem se tocar na diagonal."
-            ViolationType.NOT_IN_SOLUTION in types -> "Este lugar não faz parte da solução."
+            ViolationType.ROW_OCCUPIED in types -> "Já tem um carro nesta linha."
+            ViolationType.COLUMN_OCCUPIED in types -> "Já tem um carro nesta coluna."
+            ViolationType.REGION_OCCUPIED in types -> "Já tem um carro neste bairro."
+            ViolationType.ADJACENT_HORIZONTAL in types -> "Carros não podem estacionar lado a lado."
+            ViolationType.ADJACENT_VERTICAL in types -> "Carros não podem estacionar um atrás do outro."
+            ViolationType.ADJACENT_DIAGONAL in types -> "Carros não podem encostar na diagonal."
+            ViolationType.NOT_IN_SOLUTION in types -> "Esta vaga não faz parte da solução."
             else -> "Jogada inválida."
         }
     }

@@ -8,14 +8,16 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.miaugrid.core.game.GameModeConfig
+import com.miaugrid.core.game.GameSession
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 
 /**
- * Fluxos principais em um aparelho/emulador: navegação, colocação por toque duplo,
- * marcação por toque, desfazer, pausa, vidas, derrota, reinício, vitória e persistência.
+ * Fluxos principais em um aparelho/emulador: navegação, estacionar por toque duplo,
+ * marcação por toque, marcação automática pelo carrinho, desfazer, pausa, vidas, derrota, reinício, vitória e persistência.
  */
 @RunWith(AndroidJUnit4::class)
 class GameFlowTest {
@@ -53,7 +55,7 @@ class GameFlowTest {
     }
 
     @Test
-    fun toqueMarcaXeToqueDuploColocaGato() {
+    fun toqueMarcaXeToqueDuploEstacionaCarro() {
         openLevel1()
         val wrong = Levels.wrongCells(puzzle).first()
         board().tapCell(wrong, n)
@@ -63,11 +65,25 @@ class GameFlowTest {
         val right = puzzle.solution.positions().first()
         board().doubleTapCell(right, n)
         compose.waitForIdle()
-        compose.onNodeWithTag("cat_count").assertTextContains("Gatos: 1/$n")
+        compose.onNodeWithTag("cat_count").assertTextContains("Carros: 1/$n")
         compose.onNodeWithTag("lives").assertContentDescriptionContains("3 de 3 vidas")
 
         compose.onNodeWithTag("undo").performClick()
-        compose.onNodeWithTag("cat_count").assertTextContains("Gatos: 0/$n")
+        compose.onNodeWithTag("cat_count").assertTextContains("Carros: 0/$n")
+    }
+
+    @Test
+    fun carrinhoMarcaXAutomaticamenteEDesfazerRemoveTudo() {
+        openLevel1()
+        val start = GameSession(puzzle, GameModeConfig.CLASSIC).newGame("t")
+        val right = puzzle.solution.positions().first { it !in start.cats }
+        val expected = GameSession(puzzle, GameModeConfig.CLASSIC).autoMarksFor(right, start.cats, start.marks).size
+        board().doubleTapCell(right, n)
+        compose.waitForIdle()
+        board().assertContentDescriptionContains("$expected marcações")
+        compose.onNodeWithTag("undo").performClick()
+        compose.waitForIdle()
+        board().assertContentDescriptionContains("0 marcações")
     }
 
     @Test
@@ -114,6 +130,6 @@ class GameFlowTest {
         compose.waitForIdle()
         compose.activityRule.scenario.recreate()
         waitFor("board")
-        compose.onNodeWithTag("cat_count").assertTextContains("Gatos: 1/$n")
+        compose.onNodeWithTag("cat_count").assertTextContains("Carros: 1/$n")
     }
 }

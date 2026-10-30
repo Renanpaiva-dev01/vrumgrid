@@ -1,13 +1,21 @@
-# MiauGrid
+# VrumGrid
 
 Jogo de lógica para Android (Kotlin + Jetpack Compose) inspirado nas mecânicas do Meowdoku,
-com nome, ilustrações, sons e código próprios. O objetivo é colocar **um gato em cada linha,
-cada coluna e cada região colorida**, sem que dois gatos se toquem (nem na diagonal).
+com tema, nome, ilustrações, sons e código próprios. O tabuleiro é o mapa de uma cidade vista de
+cima: o objetivo é **estacionar um carro em cada linha, cada coluna e cada bairro colorido**, sem
+que dois carros se encostem (nem na diagonal).
+
+Ao estacionar, o **carrinho do jogador percorre sozinho o tabuleiro** e deixa um X em cada vaga
+que ficou impossível. O carrinho pode ser personalizado na **Garagem** (modelo, pintura, cor dos
+detalhes, adesivo e número).
+
+> O nome interno do projeto continua `MiauGrid` (pacote `com.miaugrid`, classes `MiauGridApp`,
+> `MiauGridTheme`), para não mudar o applicationId nem os dados salvos. O nome exibido é VrumGrid.
 
 > **Situação da build (leia primeiro).** O código foi escrito num ambiente em que o Android SDK
 > e o Google Maven (`dl.google.com`) estavam bloqueados pela rede. Por isso **o APK ainda não foi
 > compilado nem executado em aparelho**. O núcleo do jogo foi compilado e testado de verdade
-> (79 testes passando). O código Android foi checado em tipos contra o Compose Desktop, que não
+> (88 testes passando). O código Android foi checado em tipos contra o Compose Desktop, que não
 > substitui uma build Android. Detalhes em [Resultado real da verificação](#resultado-real-da-verificação).
 
 ---
@@ -57,8 +65,53 @@ regras é compilado e testado sem iniciar nenhuma tela Android.
 | Persistência versionada | `core/.../persistence` + `app/.../data/DataStoreKeyValueStore.kt` |
 | Configurações | `core/.../settings` + `app/.../ui/settings` |
 | Telemetria (somente local) | `core/.../telemetry` + `app/.../telemetry` |
-| Áudio, animações, efeitos | `app/.../audio/SoundPlayer.kt`, `app/.../ui/game/GameBoard.kt` |
+| Marcação automática pelo carro | `core/.../game/GameSession.kt` (`autoMarksFor`, `PlaceCat(autoMark)`) |
+| Carrinho personalizável | `core/.../settings/UserSettings.kt` (`CarStyle`), `app/.../ui/components/CarDrawing.kt`, `app/.../ui/garage` |
+| Áudio, animações, efeitos | `app/.../audio/SoundPlayer.kt`, `app/.../ui/game/GameBoard.kt`, `app/.../ui/components/Road.kt` |
 | Interface e navegação | `app/.../ui` (MVVM: um ViewModel por tela, `StateFlow`) |
+
+## Tema de carros
+
+- **Tabuleiro**: cada bairro (região) é um lote colorido com cantos arredondados, unido aos
+  vizinhos do mesmo bairro. Entre bairros diferentes há asfalto com faixa tracejada.
+- **Carros estacionados**: os carros do jogador usam o modelo e o adesivo escolhidos na garagem,
+  pintados com o tom escuro do bairro (a cor continua indicando o bairro). O carrinho que
+  percorre o tabuleiro usa a pintura completa da garagem. Carros fixos da
+  fase são vans cinzas com cadeado. Estacionar faz o carro "cair" na vaga com mola e giro.
+- **Erro**: aparece um cone no lugar, o cone treme, os carros em conflito ganham um anel tracejado
+  vermelho e a mensagem explica a regra quebrada.
+- **Vidas** são pneus: o pneu perdido murcha e fica tracejado (forma, não só cor).
+- **Progresso**: uma estradinha com o carro andando até a bandeira quadriculada.
+- **Abertura**: o carrinho do jogador entra derrapando e freia no centro.
+- **Início**: estrada animada, botões com escala ao pressionar e entrada em cascata.
+- **Vitória**: confete com bandeirinhas e buzina. Transições laterais entre as telas.
+- **Sons** sintetizados no aparelho: "vrum" de motor ao estacionar com marcação automática,
+  buzina de dois tons na vitória.
+
+### Marcação automática pelo carrinho
+
+Ligada por padrão (Configurações → Carrinho). Ao estacionar um carro aceito, o núcleo calcula as
+vagas que ficaram impossíveis: mesma linha, mesma coluna, mesmo bairro e as 8 vizinhas. Ficam de
+fora as vagas que já têm carro ou X. A ordem é uma rota gulosa pelo vizinho mais próximo, a partir
+do carro (`GameSession.autoMarksFor`).
+
+- Os X entram **na mesma jogada** da colocação (`Move.PlaceCat.autoMarked`). Por isso um único
+  "desfazer" tira o carro e todos os X dele, e a partida salva fica sempre consistente.
+- A interface só atrasa a exibição: cada X aparece quando o carrinho passa pela vaga. Velocidades:
+  passeio (150 ms por vaga), normal (95 ms) e turbo (50 ms).
+- Se a jogada vencer a fase, a tela de vitória espera o fim do percurso (no máximo 2,5 s).
+- Colocações recusadas não marcam nada. No modo `STRICT_SOLUTION` os X automáticos nunca cobrem
+  uma vaga da solução. Isso é testado em todas as 60 fases (`AutoMarkTest`).
+
+### Garagem
+
+Seis modelos (sedã, esportivo, buggy, picape, van, fórmula), 12 pinturas prontas mais um seletor
+de tom livre, 6 cores de detalhe, 5 adesivos (liso, faixas, número, xadrez, chamas) e número de
+corrida de 00 a 99. A prévia gira numa plataforma e roda numa estrada. Tudo é desenhado em
+vetor no Canvas, sem imagens de terceiros. As mudanças são salvas sozinhas (com agrupamento de
+300 ms, para o seletor de cor não gravar a cada quadro) e valem em todas as telas. O carrinho
+fica em `UserSettings.car`. Configurações antigas sem esse campo continuam abrindo, com o carro
+padrão.
 
 ## Regras e políticas
 
@@ -68,15 +121,15 @@ Validação central em `RulesEngine.checkPlacement`, que devolve violações est
 `NOT_IN_SOLUTION`, cada uma com a célula em conflito. A vizinhança usa
 `max(|r1-r2|, |c1-c2|) <= 1`.
 
-A vitória (`RulesEngine.evaluate`) exige a quantidade certa de gatos, um por linha, coluna e
-região, nenhum par vizinho e igualdade com a solução oficial. Um tabuleiro só "cheio" não vence.
+A vitória (`RulesEngine.evaluate`) exige a quantidade certa de carros, um por linha, coluna e
+bairro (região), nenhum par vizinho e igualdade com a solução oficial. Um tabuleiro só "cheio" não vence.
 
 **Política de validação por modo** (`GameModeConfig`, `ValidationPolicy`):
 
-- `STRICT_SOLUTION` (modo clássico e desafio diário): um gato só é aceito se estiver na solução
+- `STRICT_SOLUTION` (modo clássico e desafio diário): um carro só é aceito se estiver na solução
   oficial. Qualquer outro, mesmo respeitando as regras locais, é recusado e custa 1 vida.
 - `RULES_ONLY` (disponível na arquitetura, sem tela própria): só quebras de regra custam vida.
-  Gatos válidos fora da solução ficam no tabuleiro sem penalidade, e a dica aponta o erro.
+  Carros válidos fora da solução ficam no tabuleiro sem penalidade, e a dica aponta o erro.
 
 **Outras políticas** (centralizadas em `GameSession` e testadas):
 
@@ -85,8 +138,8 @@ região, nenhum par vizinho e igualdade com a solução oficial. Um tabuleiro s�
 - Marcações X são anotações: nunca custam vida e nunca são tratadas pelo motor como
   "impossível". O bloqueio confirmado pelo motor aparece como pontos, separado dos X.
 - **Desfazer não devolve vida.** Colocações recusadas não entram no tabuleiro nem no histórico,
-  então só jogadas válidas (gato, remoção, X, arrasto de X) podem ser desfeitas.
-- Reiniciar restaura gatos fixos, células, marcações, vidas, histórico, estado e cronômetro.
+  então só jogadas válidas (carro, remoção, X, arrasto de X) podem ser desfeitas.
+- Reiniciar restaura carros fixos, células, marcações, vidas, histórico, estado e cronômetro.
   As dicas grátis não são recarregadas, para não virarem dicas infinitas.
 - Recuperação (`RecoveryPolicy`): habilitada, 1 por partida, devolve 1 vida (parâmetros
   configuráveis). Só é concedida com o callback de recompensa do SDK, vinculada ao id do evento
@@ -96,13 +149,13 @@ região, nenhum par vizinho e igualdade com a solução oficial. Um tabuleiro s�
 
 ## Controles
 
-- **Toque**: marca ou desmarca X. **Toque duplo**: coloca gato, ou remove um gato do jogador.
+- **Toque**: marca ou desmarca X. **Toque duplo**: estaciona um carro, ou retira um carro do jogador.
   O detector espera o intervalo de toque duplo do sistema antes de confirmar o toque simples,
-  então um toque duplo nunca vira "X + gato".
+  então um toque duplo nunca vira "X + carro".
 - **Arrastar**: marca (ou desmarca) várias células numa única jogada desfazível. O arrasto
   consome os eventos e cancela o detector de toque, evitando gestos concorrentes.
-- Modo alternativo nas configurações: escolher a ferramenta (X ou gato) numa barra. O toque
-  duplo continua colocando gato, sem conflito.
+- Modo alternativo nas configurações: escolher a ferramenta (X ou carro) numa barra. O toque
+  duplo continua estacionando, sem conflito.
 - Botões: desfazer, dica, reiniciar (com confirmação configurável) e pausa (continuar,
   reiniciar, configurações, sair).
 
@@ -110,7 +163,7 @@ região, nenhum par vizinho e igualdade com a solução oficial. Um tabuleiro s�
 
 São 60 fases em `core/src/main/resources/levels/campaign.json` (versão de conteúdo 1),
 de 5x5 a 10x10: 11 fáceis, 24 médias, 23 difíceis e 2 de especialista. Cada fase guarda id,
-número, tamanho, regiões, gatos iniciais, solução oficial e dificuldade.
+número, tamanho, regiões, carros iniciais, solução oficial e dificuldade.
 
 Elas foram geradas por `./gradlew -p core generateLevels` (sementes fixas, reprodutível). O
 teste `LevelPackTest` confirma, para todas as fases, que a solução oficial obedece às regras,
@@ -154,7 +207,7 @@ publicidade **não está pronta para produção** enquanto depender dos IDs de t
 ## Persistência
 
 DataStore (Preferences) guarda documentos JSON versionados, um por tipo de dado: progresso,
-estatísticas, configurações, desafio diário e uma partida salva por modo (gatos, X, vidas,
+estatísticas, configurações (incluindo o carrinho), desafio diário e uma partida salva por modo (carros, X, vidas,
 erros, tempo, histórico de desfazer, recuperações). Cada documento tem um número de versão e
 migrações (`Document.migrations`). Cada gravação mantém uma cópia de segurança do valor
 anterior (`<chave>.bak`) na mesma operação atômica. Um documento ilegível é guardado em
@@ -188,21 +241,23 @@ recuperações e sequência de dias. Não há ranking global.
 ## Funcionalidades concluídas (no código)
 
 - Motor de regras com validação estruturada e verificação completa de vitória.
-- Solucionador (contagem até 2, detecção de puzzles impossíveis ou com várias soluções, gatos
+- Solucionador (contagem até 2, detecção de puzzles impossíveis ou com várias soluções, carros
   iniciais e verificação da solução oficial).
 - Motor de deduções lógicas, classificador de dificuldade e gerador de fases com solução única.
 - 60 fases validadas.
 - Partida completa: vidas, erros, derrota única, recuperação, desfazer, reinício, cronômetro,
   dicas explicadas, revelação, marcação por arrasto e toque duplo.
+- Marcação automática pelo carrinho, com animação do percurso e desfazer atômico.
 - Telas: abertura, inicial, seleção de fases, partida, pausa, vitória, derrota, recuperação por
-  anúncio, oferta de dica, configurações, estatísticas e desafio diário.
+  anúncio, oferta de dica, configurações, estatísticas, desafio diário e garagem.
 - Progressão com desbloqueio sequencial, recordes e "Continuar".
 - Persistência versionada com cópia de segurança e restauração da partida.
 - Anúncios recompensados e intersticiais modulares, com consentimento UMP.
-- Acessibilidade de cores: padrões e letras por região, X e pontos com formas diferentes, gato
-  fixo com coleira, erros em texto e com forma, descrições para leitores de tela nas vidas,
+- Acessibilidade de cores: padrões e letras por bairro, X e pontos com formas diferentes, carro
+  fixo com cadeado, erros em texto e com forma (cone e anel tracejado), descrições para leitores de tela nas vidas,
   fases e tabuleiro.
-- Sons originais sintetizados, vibração e animações (gato "pulando", erro tremendo, dica pulsando).
+- Sons originais sintetizados (motor, buzina), vibração e animações (carro percorrendo o tabuleiro,
+  estacionamento com mola, cone tremendo, dica pulsando, confete, transições entre telas).
 - Tema claro e escuro, layout responsivo (tabuleiro quadrado limitado a 560 dp).
 
 ## Pendências explícitas
@@ -217,7 +272,11 @@ recuperações e sequência de dias. Não há ranking global.
   desenvolvimento" na tela inicial, sem botões.
 - Ranking global e validação em servidor: não implementados. As estatísticas são locais.
 - O modo `RULES_ONLY` existe e é testado no núcleo, mas não tem tela para escolhê-lo.
-- Revisão visual em aparelhos reais (tamanhos de fonte, telas pequenas, tablets).
+- Revisão visual em aparelhos reais (tamanhos de fonte, telas pequenas, tablets). **Nenhuma tela
+  do tema de carros foi vista renderizada**: o ambiente não tem Android, e o Compose Desktop não
+  roda aqui sem `androidx.collection` (também só no Google Maven). Os desenhos foram checados só
+  em tipos.
+- Ícone do app: vetor novo (quarteirões com um carrinho), não visto num launcher real.
 
 ## Resultado real da verificação
 
@@ -226,13 +285,13 @@ SDK e os artefatos do Google Maven, incluindo o Android Gradle Plugin.
 
 | Verificação | Resultado |
 |---|---|
-| `./gradlew -p core test` | **79 testes, 0 falhas** (AdsAndRecovery 10, GameSession 22, Generator 2, HintEngine 4, LevelPack 4, Persistence 7, ProgressStatsDaily 8, RulesEngine 15, Solver 7) |
+| `./gradlew -p core test` | **88 testes, 0 falhas** (AdsAndRecovery 10, AutoMark 9, GameSession 22, Generator 2, HintEngine 4, LevelPack 4, Persistence 7, ProgressStatsDaily 8, RulesEngine 15, Solver 7) |
 | `./gradlew :app:assembleDebug` | **Não executado com sucesso:** `Plugin [id: 'com.android.application', version: '8.11.1'] was not found` (Google Maven inacessível) |
-| Checagem de tipos do app e dos testes de interface (`tools/ui-typecheck`) | Compila sem erros contra Compose Multiplatform Desktop 1.8.2. Encontrou e corrigiu 2 bugs reais (inferência de tipo em `withContext` e variável fora de escopo). APIs Android, AdMob, UMP, DataStore e androidx.lifecycle foram checadas só contra stubs. |
+| Checagem de tipos do app e dos testes de interface (`tools/ui-typecheck`) | Compila sem erros contra Compose Multiplatform Desktop 1.8.2 (inclui o tema de carros, a garagem e os testes novos). Encontrou e corrigiu 2 bugs reais (inferência de tipo em `withContext` e variável fora de escopo). APIs Android, AdMob, UMP, DataStore e androidx.lifecycle foram checadas só contra stubs. |
 | Testes de interface no emulador | Não executados |
 
 Os 22 cenários obrigatórios de teste estão cobertos no núcleo: linha, coluna e região (1 a 3),
-adjacência horizontal, vertical e diagonal (4 a 6), gatos fixos (7), coordenadas inválidas (8),
+adjacência horizontal, vertical e diagonal (4 a 6), carros fixos (7), coordenadas inválidas (8),
 solução correta e incompleta (9 e 10), puzzle sem solução e com várias soluções (11 e 12),
 consumo de vidas, derrota e vitória (13 a 15), desfazer e reiniciar (16 e 17), salvamento e
 restauração (18), recuperação sem e com recompensa (19 e 20), recompensa duplicada (21) e falhas

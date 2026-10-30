@@ -4,19 +4,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.miaugrid.app.ui.components.CatIcon
+import com.miaugrid.app.ui.components.DrivingRoad
+import com.miaugrid.app.ui.components.LocalCarLook
 import com.miaugrid.app.ui.components.ScreenScaffold
 import com.miaugrid.app.ui.components.StatRow
 import com.miaugrid.app.ui.components.formatDuration
@@ -28,11 +27,11 @@ fun DailyScreen(viewModel: DailyViewModel, onBack: () -> Unit, onPlay: (Long) ->
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val date = ui.today.format(DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale.forLanguageTag("pt-BR")))
     ScreenScaffold(title = "Desafio diário", onBack = onBack) {
-        CatIcon(Modifier.size(88.dp).align(Alignment.CenterHorizontally), fixed = true)
+        DrivingRoad(LocalCarLook.current, Modifier.padding(horizontal = 16.dp), height = 64.dp)
         Card(Modifier.fillMaxWidth().padding(16.dp)) {
             androidx.compose.foundation.layout.Column(Modifier.padding(16.dp)) {
                 Text(date.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleLarge)
-                Text("Um tabuleiro novo por dia, gerado no aparelho (funciona offline).", style = MaterialTheme.typography.bodySmall)
+                Text("Uma cidade nova por dia, gerada no aparelho (funciona offline).", style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(8.dp))
                 StatRow("Tabuleiro", "${ui.size}x${ui.size}")
                 StatRow("Status", if (ui.completedToday) "Concluído" else "Pendente")

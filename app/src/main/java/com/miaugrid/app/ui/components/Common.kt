@@ -78,7 +78,7 @@ fun ErrorState(message: String, action: @Composable () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CatIcon(Modifier.size(96.dp), tilt = -12f)
+        CarIcon(LocalCarLook.current, Modifier.size(96.dp), rotation = -25f)
         Spacer(Modifier.size(16.dp))
         Text(message, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
         Spacer(Modifier.size(16.dp))

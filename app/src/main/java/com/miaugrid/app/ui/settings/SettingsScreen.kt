@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
@@ -31,10 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.miaugrid.app.BuildConfig
 import com.miaugrid.app.ui.components.ScreenScaffold
+import com.miaugrid.app.ui.components.CarIcon
+import com.miaugrid.app.ui.components.LocalCarLook
+import com.miaugrid.core.settings.CarSpeed
 import com.miaugrid.core.settings.ControlMode
 
+private fun CarSpeed.label() = when (this) {
+    CarSpeed.CALM -> "passeio"
+    CarSpeed.NORMAL -> "normal"
+    CarSpeed.TURBO -> "turbo"
+}
+
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
+fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit, onOpenGarage: () -> Unit = {}) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     var confirmReset by rememberSaveable { mutableStateOf(false) }
     val activity = LocalContext.current as? Activity
@@ -53,11 +63,25 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
             ToggleRow("Confirmar antes de reiniciar", "confirm_restart_toggle", settings.confirmRestart) { v -> viewModel.update { it.copy(confirmRestart = v) } }
 
             Section("Controles")
-            ChoiceRow("Toque marca X, toque duplo coloca gato", "control_double", settings.controlMode == ControlMode.DOUBLE_TAP) {
+            ChoiceRow("Toque marca X, toque duplo estaciona o carro", "control_double", settings.controlMode == ControlMode.DOUBLE_TAP) {
                 viewModel.update { it.copy(controlMode = ControlMode.DOUBLE_TAP) }
             }
-            ChoiceRow("Escolher ferramenta (X ou gato) na barra", "control_tool", settings.controlMode == ControlMode.TOOL_SELECT) {
+            ChoiceRow("Escolher ferramenta (X ou carro) na barra", "control_tool", settings.controlMode == ControlMode.TOOL_SELECT) {
                 viewModel.update { it.copy(controlMode = ControlMode.TOOL_SELECT) }
+            }
+
+            Section("Carrinho")
+            ToggleRow("Carrinho marca os X sozinho ao estacionar", "auto_mark", settings.autoMarkWithCar) { v -> viewModel.update { it.copy(autoMarkWithCar = v) } }
+            if (settings.autoMarkWithCar) {
+                CarSpeed.entries.forEach { speed ->
+                    ChoiceRow("Velocidade: ${speed.label()}", "speed_${speed.name.lowercase()}", settings.carSpeed == speed) {
+                        viewModel.update { it.copy(carSpeed = speed) }
+                    }
+                }
+            }
+            OutlinedButton(onClick = onOpenGarage, modifier = Modifier.padding(top = 4.dp).testTag("settings_garage")) {
+                CarIcon(LocalCarLook.current, Modifier.size(24.dp), rotation = 90f)
+                Text("Abrir garagem", Modifier.padding(start = 8.dp))
             }
 
             Section("Privacidade e anúncios")
@@ -75,7 +99,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
             Section("Dados")
             OutlinedButton(onClick = { confirmReset = true }, modifier = Modifier.testTag("reset_progress")) { Text("Apagar progresso e estatísticas") }
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
-            Text("MiauGrid ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall)
+            Text("VrumGrid ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall)
         }
     }
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,7 +28,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.miaugrid.app.ui.components.CarIcon
 import com.miaugrid.app.ui.components.LoadingState
+import com.miaugrid.app.ui.components.LocalCarLook
 import com.miaugrid.app.ui.components.ScreenScaffold
 import com.miaugrid.app.ui.components.formatDuration
 import com.miaugrid.core.model.Difficulty
@@ -62,7 +63,7 @@ fun LevelSelectScreen(viewModel: LevelSelectViewModel, onBack: () -> Unit, onPla
         ) {
             ui.sections.forEach { (size, items) ->
                 item(span = { GridItemSpan(maxLineSpan) }, key = "header-$size") {
-                    Text("Tabuleiros ${size}x$size", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+                    Text("Cidades ${size}x$size", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
                 }
                 items(items, key = { it.id }) { item -> LevelCard(item, onPlay) }
             }
@@ -92,7 +93,7 @@ private fun LevelCard(item: LevelItem, onPlay: (String) -> Unit) {
             Text("${item.number}", style = MaterialTheme.typography.titleLarge)
             when {
                 !item.unlocked -> Icon(Icons.Filled.Lock, contentDescription = null, modifier = Modifier.size(20.dp))
-                item.record != null -> Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                item.record != null -> CarIcon(LocalCarLook.current, Modifier.size(30.dp), rotation = 90f)
                 else -> Text(item.difficulty.label(), style = MaterialTheme.typography.labelSmall)
             }
             Text(item.record?.let { formatDuration(it.bestTimeMillis) } ?: item.difficulty.label(), style = MaterialTheme.typography.labelSmall)

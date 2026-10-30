@@ -9,7 +9,7 @@ import com.miaugrid.core.settings.UserSettings
 import com.miaugrid.core.solver.BoardUnit
 
 /** Ferramenta do toque simples no modo de controle por seleção. */
-enum class Tool { MARK, CAT }
+enum class Tool { MARK, CAR }
 
 sealed interface Overlay {
     data object None : Overlay
@@ -32,10 +32,13 @@ data class VictoryInfo(
     val note: String? = null,
 )
 
-/** Colocação recusada: célula, gatos em conflito e mensagem (em texto, não só cor). */
+/** Colocação recusada: célula, carros em conflito e mensagem (em texto, não só cor). */
 data class Feedback(val id: Long, val position: Position, val conflicts: Set<Position>, val message: String)
 
 data class PlacementPulse(val id: Long, val position: Position)
+
+/** Trajeto do carrinho: sai de [start] e passa por [route], deixando um X em cada célula. */
+data class DriveAnimation(val id: Long, val start: Position, val route: List<Position>, val millisPerCell: Int)
 
 data class HintDisplay(
     val hint: Hint,
@@ -60,6 +63,7 @@ data class GameUiState(
     val settings: UserSettings = UserSettings(),
     val feedback: Feedback? = null,
     val pulse: PlacementPulse? = null,
+    val drive: DriveAnimation? = null,
     val hint: HintDisplay? = null,
     val overlay: Overlay = Overlay.None,
     val message: String? = null,
