@@ -24,6 +24,8 @@ for path in glob.glob(os.path.join(root, "**", "*.xml"), recursive=True):
             head = lines[:6]
             ours = [l.strip() for l in lines if "com.miaugrid" in l][:6]
             body = "\n".join(head + ["..."] + ours)[:3000]
+            if not lines:
+                body = ET.tostring(case, encoding="unicode")[:3000]
             failures.append((case.get("classname", "?").split(".")[-1], case.get("name", "?"), body))
 
 def esc(v):
